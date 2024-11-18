@@ -248,13 +248,13 @@ public class GameplaySlider extends GameObject {
             float fadeOutDuration = timePreempt * (float) ModHidden.FADE_OUT_DURATION_MULTIPLIER;
 
             headCirclePiece.registerEntityModifier(Modifiers.sequence(
-                Modifiers.fadeIn(fadeInDuration),
-                Modifiers.fadeOut(fadeOutDuration)
+                    Modifiers.fadeIn(fadeInDuration),
+                    Modifiers.fadeOut(fadeOutDuration)
             ));
 
             tailCirclePiece.registerEntityModifier(Modifiers.sequence(
-                Modifiers.fadeIn(fadeInDuration),
-                Modifiers.fadeOut(fadeOutDuration)
+                    Modifiers.fadeIn(fadeInDuration),
+                    Modifiers.fadeOut(fadeOutDuration)
             ));
 
         } else {
@@ -286,14 +286,23 @@ public class GameplaySlider extends GameObject {
         scene.attachChild(tailCirclePiece, 0);
 
         tickContainer.init(beatmapSlider);
+        tickContainer.setPosition(position.x, position.y);
+        tickContainer.setTranslation(-position.x, -position.y);
         scene.attachChild(tickContainer, 0);
 
         // Slider track
         superPath = renderPath;
         sliderBody.setPath(superPath, Config.isSnakingInSliders());
+
+        // Slider path vertices already has the slider position applied on it so the entity's
+        // position should be always at (0, 0). However this is a problem when we want to apply
+        // transformations to the entity, so we do this workaround to make the entity's position
+        // (x and y properties) to be the real slider's position (As well for slider ticks).
+        sliderBody.setPosition(position.x, position.y);
+        sliderBody.setTranslation(-position.x, -position.y);
+
         sliderBody.setBackgroundWidth(OsuSkin.get().getSliderBodyWidth() * scale);
         sliderBody.setBackgroundColor(bodyColor.r(), bodyColor.g(), bodyColor.b(), OsuSkin.get().getSliderBodyBaseAlpha());
-
         sliderBody.setBorderWidth(OsuSkin.get().getSliderBorderWidth() * scale);
         sliderBody.setBorderColor(borderColor.r(), borderColor.g(), borderColor.b());
 
